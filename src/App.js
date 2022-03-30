@@ -16,13 +16,15 @@ function Selector({options, onSelect}) {
 function Background({name, type, isActive}) {
   const filename = `${process.env.PUBLIC_URL}/${name}.${type}`;
 
+  const activation = isActive ? 'isActive' : '';
+
   if (type === 'mp4') {
     return (
-      <video controls loop muted autoPlay className='isActive' src={filename} type='video/mp4'></video>
+      <video controls loop muted autoPlay className={activation} src={filename} type='video/mp4'></video>
     )
   } else if (type === 'jpg') {
     return (
-      <img className='isActive' src={filename} alt='' />
+      <img className={activation} src={filename} alt='' />
     )
   }
   
@@ -35,15 +37,9 @@ function App() {
   // I have it set to the first background by default. If that isn't desired behavior, it can be set to null by default with an empty option added to the Selector component.
   const [current, setCurrent] = React.useState(backgrounds[0].name)
 
-  let selectionMap = {};
-
-  for (let {name, type} of backgrounds) {
-    selectionMap[name] = <Background name={name} type={type} />
-  }
-
   return (
     <div className="App-header">
-        {selectionMap[current]}
+        {backgrounds.map(({name, type}) => <Background key={name} name={name} type={type} isActive={name === current}/>)}
       <img src={logo} alt="logo" />
       {/* Making the selector it's own component makes it a little easier to come back and modify in the future should you want to have a version without the big box in the middle of the screen. */}
       <Selector options={options} onSelect={setCurrent} />
